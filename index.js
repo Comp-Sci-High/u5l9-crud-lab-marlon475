@@ -10,6 +10,8 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use(express.static(__dirname + "/public"))
+
 app.set("view engine", "ejs");
 
 app.use(express.json());
@@ -48,18 +50,17 @@ app.get("/", async (req, res) => {
 
 // Create a dynamic PATCH route handler for "/update/{name}" that modifies the population of the country specified in the path (3 points)
 // Test this route on post man
-app.patch("/update/:name", async (req, res) => {
- const response = await Country.findOneAndUpdate({name: req.params.name}, {population: req.body.population}, {
-  new: true
- })
+app.patch("/country/:name", async (req, res) => {
+ const response = await Country.findOneAndUpdate({country: req.params.name}, {population: req.body.population})
+ res.json(response)
 })
 
 
 // Create a DELETE route handler for "/delete/country" that deletes a country of your choice (3 points)
 // Test this route on post man
-app.delete("/delete/country", async (req, res) => {
+app.delete("/country/:name", async (req, res) => {
   const response = await Country.findOneAndDelete({
-    name: req.params.name
+    country: req.params.name
   })
   res.json(response)
 })
@@ -67,7 +68,7 @@ app.delete("/delete/country", async (req, res) => {
 async function startServer() {
   
     // add your SRV string with a database called countries
-  await mongoose.connect("mongodb+srv://SE12:CSH2025@cluster0.xfcbvkb.mongodb.net/restaurant?retryWrites=true&w=majority&appName=Cluster0");
+  await mongoose.connect("mongodb+srv://SE12:CSH2025@cluster0.xfcbvkb.mongodb.net/countries?retryWrites=true&w=majority&appName=Cluster0");
 
   app.listen(3000, () => {
     console.log("Server is running");
